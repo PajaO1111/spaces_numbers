@@ -11,9 +11,10 @@ Projekt rozlišuje **inkluzi množin** ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ od **algebrai
 **Funkční lokální prototyp, nikoli uzavřené produkční vydání.**
 
 - Fáze 0–5 a 6A/6B jsou dokončené pro prototyp; navazují volitelné MVP+ režimy.
-- Fáze 5.5 obsahuje původní záznam s nedoloženými podmínkami a pět modelových/AI profilů. Modely nejsou návštěvníci; potřebných alespoň 5 nezávislých skutečných průchodů není doloženo, takže brána zůstává otevřená.
+- Fáze 5.5 obsahuje původní záznam s nedoloženými podmínkami a modelové/AI profily, včetně dalšího obsahově opakovaného bloku. Modely nejsou návštěvníci; potřebných alespoň 5 nezávislých skutečných průchodů není doloženo. Pro sběr je připraven [čistý dotazník](./overeni-5.5-cisty.md), brána zůstává otevřená.
 - Fáze 7 je rozpracovaná: webové vstupy jsou propojené a základní automatické kontroly procházejí. Zbývá odborná revize, návštěvnické ověření, manuální přístupnostní audit, výkonová a závěrečná licenční kontrola.
 - Fáze 8 je návrh dalšího rozvoje, ne závazek implementovat celou původní osnovu.
+- V 7V.3 byly ověřené materiálové role rozšířeny z pilotu na výkladové/laboratorní sekce atlasu a inspektor/ovladače PHP explorátoru. Uživatel schválil jemný směr; `card-materials.css` a tokeny jsou sdílené, pracovní 3D plocha zůstává neprůhledná. Automatické regrese prošly. Čtečka, skutečný browser zoom a výkon na cílových zařízeních zůstávají otevřené z 7V.2; podrobný stav je v [faze2.md](./faze2.md).
 
 Podrobný plán a průběžné hodnocení: [faze.md](./faze.md). Dosavadní technické ověření: [runtime-validation-report.md](./runtime-validation-report.md).
 
@@ -47,6 +48,8 @@ Otevři [wireframe.html](./wireframe.html) v moderním prohlížeči. Ve stejné
 - [complex-math.js](./complex-math.js)
 - [quaternion-math.js](./quaternion-math.js)
 - [octonion-math.js](./octonion-math.js)
+
+Zachovej také [assets/css/design-tokens.css](./assets/css/design-tokens.css), [assets/css/card-materials.css](./assets/css/card-materials.css) a [assets/css/pilot-cards.css](./assets/css/pilot-cards.css): společné tokeny, materiálové role karet a atmosféru atlasu. Atlas je načítá relativní cestou bez serveru.
 
 Základní atlas nepotřebuje PHP, Node.js ani WebGL. Odkaz na samostatný PHP explorátor však přes `file:` nefunguje jako aplikace; pro něj použij následující variantu.
 
@@ -104,7 +107,7 @@ npm test
 | `npm test` | Unit i E2E testy. |
 | `php -l public\octonion-explorer.php` | Kontrola PHP syntaxe. |
 
-Poslední zaznamenané ověření dne 1. 11. 2026: **27 unit testů a 7 Playwright scénářů prošlo, exit code 0**; build i PHP syntax check uspěly. Browser testy zahrnují všechny strukturované hloubky, Enter/Space, přesné zlomky, chyby a jejich nápravu, oba motivy, šířky 320/768/1440 px a simulovanou nedostupnost WebGL. Diagnostický scénář vypisuje lokální časy načtení, objem odpovědí a intervaly snímků. Automatické testy nedokládají porozumění návštěvníků ani úplnou přístupnost a výkon na reálných zařízeních.
+Poslední zaznamenané ověření dne 1. 11. 2026: **27 unit testů a 14 Playwright scénářů prošlo, exit code 0**; build i PHP syntax check uspěly. Browser testy zahrnují matematické průchody, oba motivy, šířky 320/768/1440 px, WebGL fallback i společné role povrchů ve vstupním atlasu a PHP explorátoru. Pilotní validace přidává 624 vzorků kontrastu skutečně složeného pozadí (minimum 4,822:1), vybraný vstup/fokus alespoň 3:1, 200% root text, CSS layout zoom a simulovaný neprůhledný fallback. Test 7V.3 ověřuje stejné role v obou tématech, pracovní plochu, inset ovladače a zachování scény. Opraveno zalamování dlouhých textů a přepínačů bez skrytí přesahu stránky. Automatické testy nedokládají porozumění návštěvníků ani úplnou přístupnost, skutečný browser zoom a výkon na reálných zařízeních.
 
 ## Struktura projektu
 
@@ -113,13 +116,17 @@ Poslední zaznamenané ověření dne 1. 11. 2026: **27 unit testů a 7 Playwrig
 | `wireframe.html` | Zdroj základní expozice, její CSS, SVG a interakce. |
 | `complex-math.js`, `quaternion-math.js`, `octonion-math.js` | Sdílená matematická jádra a jejich sousední `*.test.js` testy. |
 | `assets\js\` | ES modules samostatného explorátoru a jednotlivých pohledů. |
+| `assets\css\design-tokens.css` | Sdílené materiálové, barevné a typografické role pro atlas i explorátor. |
+| `assets\css\pilot-cards.css` | Vzhled pouze dvou pilotních karet 7V.1. |
 | `assets\scss\explorer.scss` | Zdroj stylů explorátoru. |
 | `data\octonion-data.js` | Data trojic, Fanoových vztahů a incidencí. |
 | `scripts\copy-vendor.mjs` | Příprava veřejných assetů a vstupní stránky. |
 | `public\` | Document root: sestavený atlas, PHP stránka a assety. |
 | `tests\e2e\`, `playwright.config.cjs` | Browser scénáře a konfigurace. |
 | `faze.md` | Rozsah, fáze, validační brány a návrh dalšího rozvoje. |
-| `overeni-5.5.md` | Návštěvnický dotazník; původní odpovědi a pět modelových profilů, ne uzavřená brána. |
+| `overeni-5.5.md` | Archiv původních a modelových odpovědí, ne uzavřená brána. |
+| `overeni-5.5-cisty.md` | Čistý dotazník pro skutečné návštěvníky bez odpovědí a klíče. |
+| `faze2.md` | Druhá etapa, vizuální podfáze a výběrové obsahové rozšíření. |
 | `1.md`, `v1.md`, `prompt_STYLE.md` | Původní náměty, vizualizační zásady a designové zadání; ne seznam již dodaných funkcí. |
 
 Technologie: vanilla HTML/CSS/JavaScript, SVG, PHP, Three.js, OrbitControls, GSAP, Sass a Playwright. Nepoužívá se aplikační framework ani bundler.

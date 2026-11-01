@@ -13,7 +13,9 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111827">
   <title><?= htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></title>
+  <link rel="stylesheet" href="/assets/css/design-tokens.css">
   <link rel="stylesheet" href="/assets/explorer.css">
+  <link rel="stylesheet" href="/assets/css/card-materials.css">
   <script type="importmap">
     {"imports":{"three":"/assets/vendor/three/three.module.js","gsap":"/assets/vendor/gsap/gsap.js"}}
   </script>
@@ -42,7 +44,7 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
     </nav>
 
     <section class="workspace" aria-label="Interaktivní explorátor">
-      <div class="visual-panel">
+      <div class="visual-panel vn-card-surface vn-card-surface--workspace">
         <div class="visual-heading">
           <div>
             <p class="eyebrow" id="mode-kicker">ÚPLNÝ 3-UNIFORMNÍ HYPERGRAF</p>
@@ -56,7 +58,7 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
         <div id="mode-controls" class="mode-controls"></div>
       </div>
 
-      <aside class="inspector" aria-label="Matematický panel">
+      <aside class="inspector vn-card-surface vn-card-surface--reading" aria-label="Matematický panel">
         <h2>Matematický panel</h2>
         <section>
           <h3>Combination Statistics</h3>

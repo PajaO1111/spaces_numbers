@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
   <title>Vesmír čísel — základní expozice</title>
+  <link rel="stylesheet" href="assets/css/design-tokens.css">
   <style>
     :root {
       color-scheme: dark;
@@ -17,8 +18,8 @@
       --accent: #73c9dc;
       --accent-soft: rgba(115, 201, 220, .12);
       --focus: #f4ca78;
-      --font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-      --font-math: "Cambria Math", "Times New Roman", serif;
+      --font-body: var(--vn-font-body);
+      --font-math: var(--vn-font-math);
       --font-size-caption: .72rem;
       --font-size-body: 1rem;
       --font-size-intro: 1.05rem;
@@ -36,8 +37,8 @@
       --radius-large: 18px;
       --radius-control: 999px;
       --content-max: 1120px;
-      --focus-width: 3px;
-      --focus-offset: 3px;
+      --focus-width: var(--vn-focus-width);
+      --focus-offset: var(--vn-focus-offset);
       --motion-fast: .18s;
       font-family: var(--font-body);
     }
@@ -189,7 +190,7 @@
     .mode-button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
     .mode-panel { padding-top: 16px; }
     .mode-panel[hidden] { display: none; }
-    .structure-card { margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-small); min-width: 0; }
+    .structure-card { margin: 16px 0; padding: 14px; min-width: 0; }
     .structure-card summary { cursor: pointer; font-weight: 600; }
     .structure-visual { display: block; width: min(100%, 520px); height: auto; margin: 12px auto; }
     #topology-plot { touch-action: pan-y; cursor: grab; }
@@ -279,16 +280,16 @@
     .depth-detail h4 { margin: 0 0 8px; font-size: 1rem; }
     .depth-detail p { margin-bottom: 0; overflow-wrap: anywhere; }
     .story-motto { margin: 18px 0 0; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--accent); }
-    .exposition { margin-top: var(--space-6); padding: clamp(18px, 3vw, 28px); }
+    .exposition { margin-top: var(--space-6); padding: clamp(18px, 3vw, 28px); overflow-wrap: anywhere; }
     .exposition h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); }
     .reading-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
     .reading-grid > * { min-width: 0; }
     .reading-grid h3, .reading-grid h5 { margin: 0 0 8px; font-size: 1.05rem; }
     .reading-grid p, .timeline p, dd { color: var(--muted); }
-    .reading-grid article { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-medium); }
+    .reading-grid article { padding: 16px; }
     .exposition a, .mode-panel a { color: var(--accent); text-underline-offset: 3px; overflow-wrap: anywhere; }
     .exposition a:hover, .mode-panel a:hover { text-decoration-thickness: 2px; }
-    .real-experiment { margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-medium); }
+    .real-experiment { margin: 18px 0; padding: 16px; }
     .real-experiment label { display: block; }
     .real-experiment input[type="range"] { width: 100%; accent-color: var(--accent); }
     input:focus-visible, summary:focus-visible, .table-wrap:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
@@ -335,11 +336,11 @@
     .property-no { color: var(--text); border-style: dashed; }
     .property-yes::before { content: "✓"; }
     .property-no::before { content: "×"; }
-    .real-classification { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-medium); }
+    .real-classification { margin: 24px 0; padding: 18px; }
     .classification-tree, .classification-tree ul { list-style: none; padding-left: 18px; }
     .classification-tree ul { border-left: 2px solid var(--line); margin: 10px 0; }
-    .classification-tree li { margin: 10px 0; }
-    .info-node { display: inline-block; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; background: var(--surface-raised); }
+    .classification-tree li { margin: 10px 0; overflow-wrap: anywhere; }
+    .info-node { display: inline-block; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; background: var(--surface-raised); }
     .section-jump { display: inline-block; margin: 8px 12px 0 0; }
     @media (max-width: 720px) {
       .reading-grid, .orbit-layout, .lab-controls { grid-template-columns: 1fr; }
@@ -409,8 +410,24 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/card-materials.css">
+  <link rel="stylesheet" href="assets/css/pilot-cards.css">
 </head>
 <body>
+  <svg class="pilot-atmosphere" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g class="atmosphere-planes">
+      <path class="atmosphere-plane" d="M-100 170 210 45 425 180 115 305Z M-100 210 210 85 425 220 115 345Z M-100 250 210 125 425 260 115 385Z"/>
+      <path class="atmosphere-plane atmosphere-plane--violet" d="M1120 180 1480 315 1300 515 940 380Z M1120 220 1480 355 1300 555 940 420Z M1120 260 1480 395 1300 595 940 460Z"/>
+      <path class="atmosphere-plane" d="M50 770 280 650 460 750 230 870Z M50 770 50 940 230 1040 230 870 M230 870 460 750 460 920 230 1040 M280 650 280 820 460 920"/>
+    </g>
+    <g class="atmosphere-network">
+      <path d="M20 440 140 510 60 650 280 590 420 470 610 560 760 410 970 530 1120 670 1360 600 1490 770 M140 510 280 590 310 390 420 470 M60 650 180 800 280 590 M610 560 570 760 790 700 760 410 M970 530 790 700 1120 670 1220 850 1360 600"/>
+      <circle cx="140" cy="510" r="4"/><circle cx="60" cy="650" r="3"/><circle cx="280" cy="590" r="4"/>
+      <circle cx="420" cy="470" r="3"/><circle cx="610" cy="560" r="4"/><circle cx="760" cy="410" r="3"/>
+      <circle cx="970" cy="530" r="4"/><circle cx="790" cy="700" r="3"/><circle cx="1120" cy="670" r="4"/>
+      <circle cx="1360" cy="600" r="3"/><circle cx="1220" cy="850" r="3"/>
+    </g>
+  </svg>
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="#uvod" aria-label="Vesmír čísel — úvod">
@@ -429,7 +446,7 @@
       <p class="intro">Prozkoumej, proč lidem dosavadní čísla nestačila — a co nového přineslo každé další rozšíření.</p>
       <p class="intro">Počítání nestačí na každý rozdíl, celá čísla na každý podíl a zlomky na každou délku. To je naše cesta, ne přesná chronologie objevů. Další algebry nabídnou nové operace i za cenu ztráty některých vlastností.</p>
 
-      <section class="panel diagram-panel" aria-labelledby="diagram-title">
+      <section class="panel diagram-panel vn-card-surface vn-card-surface--workspace" aria-labelledby="diagram-title">
         <div class="diagram-heading">
           <div>
             <p class="eyebrow">Vyber si vlastní cestu</p>
@@ -469,6 +486,7 @@
             <p class="visualization-note">Vnořené obrysy vyjadřují pouze vztah podmnožin, nikoli hustotu nebo velikost množin. Iracionální čísla nejsou jedna oddělená oblast; leží hustě napříč ℝ.</p>
           </div>
           <div class="visualization-stage" id="complex-plane-view" hidden>
+            <section class="pilot-card pilot-card--lab vn-card-surface vn-card-surface--lab" data-world="c" aria-labelledby="complex-view-title">
             <div class="complex-heading">
               <h3 class="view-heading" id="complex-view-title" tabindex="-1">Komplexní rovina · ℂ nad ℝ</h3>
               <button class="back-button" id="back-to-real" type="button">Zpět na reálná čísla</button>
@@ -532,6 +550,7 @@
             </div>
             <p class="visualization-note">ℂ je dvourozměrný vektorový prostor nad ℝ: reálná čísla zůstávají na ose x a imaginární složka přidává osu y. Rovina je zobrazení čísel, nikoli další „obalová“ množina na ose.</p>
             <p id="complex-lab-bridge">Komplexní číslo je bod roviny. Laboratoř ukazuje sčítání jako posun a násobení nenulovým w jako otočení o arg(w) a změnu měřítka |w|. Posuvník nahrazuje přesný zlomek desetinnou hodnotou s krokem 0,1; bod není nutné přetahovat myší.</p>
+            </section>
             <div class="dimension-next" aria-label="Navazující vyšší dimenze">
               <span>Další krok: vícesložkové algebry</span>
               <button class="extension-button map-node" type="button" data-symbol="ℍ" aria-pressed="false">ℍ · 4 reálné složky<small>další vizualizace</small></button>
@@ -540,7 +559,7 @@
           </div>
           <div class="visualization-stage" id="higher-dimension-view" hidden>
             <button class="back-button" id="back-to-complex" type="button">Zpět do komplexní roviny</button>
-            <div class="dimension-view">
+            <div class="dimension-view vn-card-surface vn-card-surface--lab">
               <h3 class="view-heading" id="dimension-title" tabindex="-1"></h3>
               <p id="dimension-guide"></p>
               <div class="mode-switch" role="group" aria-label="Pohled na strukturu">
@@ -722,7 +741,7 @@
                 <p>Volitelný průzkum vztahů v pevné bázi 1, e₁…e₇. Vyber jednu ze všech 35 neuspořádaných trojic různých imaginárních jednotek; výpočty používají pořadí rostoucích indexů.</p>
                 <label for="structure-triple">Trojice jednotek</label>
                 <select id="structure-triple" class="quiet-button"></select>
-                <details class="structure-card" open>
+                <details class="structure-card vn-inset-surface" open>
                   <summary>1 · Fanoova rovina: krokový součin</summary>
                   <p>První dva prvky vybrané trojice tvoří faktory. Krokování ukazuje čtení orientace, ne pohyb čísla v prostoru.</p>
                   <div class="structure-controls"><button type="button" class="quiet-button" id="structure-product-next">Další krok součinu</button><button type="button" class="quiet-button" id="structure-product-reset">Od začátku</button></div>
@@ -730,16 +749,16 @@
                   <p id="structure-product" aria-live="polite"></p>
                   <button type="button" class="quiet-button" id="structure-open-fano">Otevřít celý orientovaný Fanoův diagram</button>
                 </details>
-                <details class="structure-card" open>
+                <details class="structure-card vn-inset-surface" open>
                   <summary>2 · Asociátor: kde záleží na závorkách?</summary>
                   <div id="structure-associator" class="quaternion-copy" aria-live="polite"></div>
                 </details>
-                <details class="structure-card">
+                <details class="structure-card vn-inset-surface">
                   <summary>3 · Alternativita</summary>
                   <p>Opakovaný faktor dává (xx)y = x(xy) a (yx)x = y(xx). Jakékoli dva prvky generují asociativní podalgebru (Artinova věta). Níže jsou kontroly příkladu, nikoli důkaz obecné identity.</p>
                   <div id="structure-alternative" class="quaternion-copy" aria-live="polite"></div>
                 </details>
-                <details class="structure-card" open>
+                <details class="structure-card vn-inset-surface" open>
                   <summary>4 · Cayley–Dickson Builder</summary>
                   <p>Každý krok zdvojí počet reálných složek. Dvojice jsou algebraické bloky, nikoli nová fyzická osa. Klikáním procházíš stavbu; automatická animace není nutná.</p>
                   <div class="structure-controls" role="group" aria-label="Krok konstrukce">
@@ -753,13 +772,13 @@
                   <p>Společná konvence: (a,b)(c,d) = (ac − d̄b, da + bc̄). U ℂ jsou části reálné, u ℍ komplexní, u 𝕆 kvaternionové. Složené výpočty posledního kroku jsou ve stávající akademické laboratoři.</p>
                   <button type="button" class="quiet-button" id="structure-open-academic">Otevřít akademickou laboratoř pro tuto trojici</button>
                 </details>
-                <details class="structure-card" open>
+                <details class="structure-card vn-inset-surface" open>
                   <summary>5 · Hypergraf vztahů mezi jednotkami</summary>
                   <p>Vyplněný trojúhelník označuje jeden vztah tří vrcholů — hyperhranu, nikoli tři nezávislé hrany. Poloha, plocha ani délky nic neměří. Současně zobrazujeme jen vybranou trojici.</p>
                   <svg class="structure-visual" viewBox="0 0 520 380" role="img" aria-labelledby="structure-graph-description"><title id="structure-graph-description">Vybraná hyperhrana asociátoru</title><g id="structure-graph"></g></svg>
                   <p id="structure-graph-key" aria-live="polite"></p>
                   <p>Pro tyto normalizované bázové jednotky je norma asociátoru jen 0 nebo 2: nejde o spojitou škálu „síly“. Nulových je 7 trojic (Fanoovy přímky, s jednotkou 1 generují ℍ), nenulových 28. Pro obecné koeficienty je nutné počítat asociátor znovu; nulový výsledek jedné trojice sám neprokazuje asociativitu celé algebry.</p>
-                  <details class="structure-card" id="layered-hypergraph">
+                  <details class="structure-card vn-inset-surface" id="layered-hypergraph">
                     <summary>Všech 35 trojic · interaktivní vrstvený model</summary>
                     <p>Úplný 3-uniformní hypergraf nad sedmi body, nikoli samotná Fanoova rovina. Vrstvy obsahují po sedmi trojicích v lexikografickém pořadí; jejich barvy a výška nemají algebraický význam. Každý bod je zde nakreslen pětkrát, ale jde stále o tutéž jednotku.</p>
                     <div id="layered-visibility" class="structure-controls" role="group" aria-label="Viditelné vrstvy"></div>
@@ -845,7 +864,7 @@
                   </div>
                 </div>
                 <p>Smyčka bez označeného uzlu nemá zvláštní význam. Zde jsou všechny orientované trojice použité touto konvencí.</p>
-                <details class="structure-card" open>
+                <details class="structure-card vn-inset-surface" open>
                   <summary>Alternativa · barevná tabulka násobení</summary>
                   <p>Řádek je levý faktor, sloupec pravý. Barva rozlišuje výsledný bázový prvek; znaménko je vždy napsané. Tabulka obsahuje i jednotku 1. Na malé obrazovce ji lze posouvat vodorovně; výsledek kliknutí je také pod tabulkou.</p>
                   <div class="octonion-matrix-scroll" tabindex="0" role="region" aria-label="Posouvatelná tabulka oktonionového násobení">
@@ -863,7 +882,7 @@
       </section>
 
       <div class="workbench">
-        <section class="panel lesson" aria-labelledby="lesson-title" aria-live="polite">
+        <section class="panel lesson vn-card-surface vn-card-surface--reading" aria-labelledby="lesson-title" aria-live="polite">
           <div class="lesson-top">
             <div>
               <p class="eyebrow" id="lesson-kicker">První zastávka · počítání</p>
@@ -877,8 +896,11 @@
         </section>
       </div>
       <aside class="sidebar" aria-label="Hloubka výkladu">
-          <section class="panel depth-panel">
-            <h3>Hloubka výkladu</h3>
+          <section class="panel depth-panel pilot-card pilot-card--reading vn-card-surface vn-card-surface--reading" data-world="r" aria-labelledby="depth-title">
+            <div class="pilot-heading">
+              <h3 id="depth-title">Hloubka výkladu</h3>
+              <span class="pilot-world" id="depth-world">ℝ · Reálná čísla</span>
+            </div>
             <div class="level-switch" role="group" aria-label="Úroveň výkladu">
               <button class="level-button" type="button" data-level="zakladni" aria-pressed="true">Základní</button>
               <button class="level-button" type="button" data-level="pokrocila" aria-pressed="false">Pokročilá</button>
@@ -887,36 +909,36 @@
             <div class="depth-detail" id="depth-detail" aria-live="polite"></div>
           </section>
       </aside>
-      <section class="panel exposition" id="real-exposition" aria-labelledby="real-exposition-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" id="real-exposition" aria-labelledby="real-exposition-title">
         <h2 id="real-exposition-title">Od počítání k reálné ose</h2>
         <p>Mapa nahoře vybírá téma. Tady si můžeš ověřit, proč jsou jednotlivé množiny potřeba.</p>
         <div class="reading-grid">
-          <article>
+          <article class="vn-inset-surface">
             <h3>ℕ · kolik jich je?</h3>
             <p>Sčítání a násobení přirozených čísel zůstává v ℕ. Rozdíl 3 − 5 už v ℕ neleží.</p>
             <label><input id="natural-zero" type="checkbox"> V této expozici zahrnout do ℕ také nulu</label>
             <p id="natural-convention" role="status">Zvolená konvence: ℕ = {1, 2, 3, …}; 0 ∉ ℕ.</p>
             <p>Obě konvence se používají. Přepínač mění značení, nikoli aritmetiku nebo inkluzi ℕ ⊂ ℤ.</p>
           </article>
-          <article>
+          <article class="vn-inset-surface">
             <h3>ℤ · rozdíl a směr</h3>
             <p>3 − 5 = −2. Nula a záporná čísla doplní kladnou část osy. Dluh či teplota pod nulou jsou pomůcky, ne definice.</p>
             <p>Celá čísla zvládnou každý rozdíl, ale podíl 1 ÷ 2 není celé číslo.</p>
           </article>
-          <article>
+          <article class="vn-inset-surface">
             <h3>ℚ · části celku</h3>
             <p>Racionální číslo má tvar p/q, kde p a q jsou celá a q ≠ 0. Například 2/4 = 1/2.</p>
             <p>1/2 + 1/3 = 3/6 + 2/6 = 5/6.</p>
             <details><summary>Zlomek a desetinný zápis</summary><p>1/2 = 0,5; 1/3 = 0,333… (trojka se opakuje bez konce). Desetinný rozvoj racionálního čísla je konečný nebo od určitého místa periodický. Dělení nulou zde není definováno.</p></details>
           </article>
-          <article>
+          <article class="vn-inset-surface">
             <h3>ℝ · také délky bez zlomku</h3>
             <p>Úhlopříčka čtverce o straně 1 má délku √2. Platí √2 ≈ 1,4142, ale konečné desetinné přiblížení není samotná hodnota √2.</p>
             <details><summary>Proč √2 není racionální?</summary><p>Kdyby √2 = p/q pro nesoudělná kladná celá p, q, pak p² = 2q². Z toho je p sudé: p = 2k. Dosazením dostaneme q² = 2k², tedy i q je sudé. To odporuje nesoudělnosti. √2 proto nelze zapsat jako zlomek.</p></details>
             <p>ℝ = ℚ ∪ (ℝ∖ℚ). Tyto dvě části jsou disjunktní; iracionální čísla nejsou „nad“ ℝ.</p>
           </article>
         </div>
-        <div class="real-experiment">
+        <div class="real-experiment vn-inset-surface">
           <h3>Jedna osa, různé druhy čísel</h3>
           <svg viewBox="0 0 600 110" role="img" aria-labelledby="real-line-title real-line-desc">
             <title id="real-line-title">Vybrané body na reálné ose od −2 do 2</title>
@@ -935,7 +957,7 @@
           </svg>
           <p>−2 a 0 jsou celá čísla; 1/2 je racionální; √2 je iracionální; 2 je přirozené. Všechna leží na téže reálné ose. Vybrané body nejsou úplný obraz množin.</p>
         </div>
-        <div class="real-experiment">
+        <div class="real-experiment vn-inset-surface">
           <h3>Hustota: přibliž se mezi dva body</h3>
           <p>Obě části jsou husté: mezi každými dvěma různými reálnými čísly leží racionální i iracionální číslo. Zde zmenšujeme jeden konkrétní interval (0, b).</p>
           <label for="density-zoom">Přiblížení intervalu (0 až 8 kroků)</label>
@@ -960,7 +982,7 @@
         <a class="section-jump" href="#sources">Zdroje k výkladu</a>
       </section>
 
-      <section class="panel exposition" aria-labelledby="history-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" aria-labelledby="history-title">
         <h2 id="history-title">Krátká historická osa</h2>
         <p>Matematická cesta není pořadí, v jakém lidstvo vše objevilo. Následují vybrané milníky, ne úplná historie.</p>
         <ol class="timeline">
@@ -978,7 +1000,7 @@
         </ol>
       </section>
 
-      <section class="panel exposition" id="misconceptions" aria-labelledby="misconceptions-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" id="misconceptions" aria-labelledby="misconceptions-title">
         <h2 id="misconceptions-title">4.5 · Matematické omyly</h2>
         <div class="reading-grid">
           <article><h3>Iracionální čísla jsou nad ℝ?</h3><p><strong>Omyl:</strong> iracionální čísla tvoří další rozšíření reálných čísel.</p><p><strong>Správně:</strong> ℝ∖ℚ je část ℝ. Racionální i iracionální čísla leží hustě na téže ose.</p></article>
@@ -988,7 +1010,7 @@
         </div>
       </section>
 
-      <section class="panel exposition" aria-labelledby="glossary-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" aria-labelledby="glossary-title">
         <h2 id="glossary-title">Malý slovník</h2>
         <dl>
           <dt>Inkluze · A ⊂ B</dt><dd>Každý prvek A patří také do B; v této expozici ⊂ znamená vlastní podmnožinu.</dd>
@@ -1002,7 +1024,7 @@
         </dl>
       </section>
 
-      <section class="panel exposition" id="universe-overview" aria-labelledby="overview-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" id="universe-overview" aria-labelledby="overview-title">
         <h2 id="overview-title">Mapa matematického vesmíru · pohled z orbity</h2>
         <p>Závěrečný přehled, ne náhrada hlavní množinové navigace. Kliknutí na symbol vrátí odpovídající pohled do mapy nahoře.</p>
         <div class="orbit-layout">
@@ -1036,7 +1058,7 @@
             <p>ℚ je těleso, ale není reálnou algebrou s běžným násobením všemi reálnými skaláry, proto nemá řádek v této tabulce. ℝ a ℂ jsou tělesa; ℍ a 𝕆 jsou algebry s dělením. 𝕆 je navíc alternativní.</p>
           </div>
         </div>
-        <section class="real-classification" id="real-classification" aria-labelledby="classification-title">
+        <section class="real-classification vn-inset-surface" id="real-classification" aria-labelledby="classification-title">
           <h3 id="classification-title">Další rozdělení uvnitř ℝ</h3>
           <p>Tyto informační uzly nejsou další kroky hlavní cesty ani nové fyzické dimenze. Rozdělují reálná čísla podle toho, zda jsou kořenem nenulového polynomu s celočíselnými koeficienty.</p>
           <ul class="classification-tree">
@@ -1088,7 +1110,7 @@
         <p class="visualization-note">Podklady: <a href="https://mathworld.wolfram.com/RationalNumber.html">MathWorld: ℚ a hustota</a>, <a href="https://mathshistory.st-andrews.ac.uk/HistTopics/Real_numbers_3/">MacTutor: nespočetnost ℝ</a>, <a href="https://math.ucr.edu/home/baez/octonions/node2.html">Baez: vlastnosti algeber</a>. Příklad s oktoniony používá orientace tohoto prototypu, nikoli číslování převzaté z jiné tabulky.</p>
       </section>
 
-      <section class="panel exposition" id="sources" aria-labelledby="sources-title">
+      <section class="panel exposition vn-card-surface vn-card-surface--reading" id="sources" aria-labelledby="sources-title">
         <h2 id="sources-title">Zdroje a další čtení</h2>
         <p>Odkazy u historických milníků a aplikací dokládají konkrétní tvrzení. Pro matematický výklad:</p>
         <ul>
@@ -1439,6 +1461,10 @@
       elements.copy.textContent = stop.copy;
       elements.example.textContent = stop.example;
       elements.context.textContent = stop.context;
+      document.querySelector(".pilot-card--reading").dataset.world = {
+        "ℕ": "n", "ℤ": "z", "ℚ": "q", "ℝ": "r", "ℝ∖ℚ": "irrational", "ℂ": "c", "ℍ": "h", "𝕆": "o"
+      }[activeSymbol];
+      document.querySelector("#depth-world").textContent = `${stop.symbol} · ${stop.name}`;
       let convention;
       if (activeSymbol === "ℕ") {
         convention = naturalZero.checked ? "ℕ = {0, 1, 2, 3, …}; 0 ∈ ℕ." : "ℕ = {1, 2, 3, …}; 0 ∉ ℕ.";

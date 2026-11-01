@@ -52,7 +52,7 @@ export class OctonionView {
   _buildControls() {
     const previousFactors = this.factorInputs?.map(select => select.value) ?? ["1", "2"];
     const wrap = document.createElement("section");
-    wrap.className = "control-card";
+    wrap.className = "control-card vn-inset-surface";
     wrap.innerHTML = `<h3>Výpočet součinu</h3><div class="select-row">
       <label>První faktor A<select data-factor="a"></select></label>
       <label>Druhý faktor B<select data-factor="b"></select></label></div>

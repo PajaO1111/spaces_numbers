@@ -20,7 +20,7 @@ export class AssociatorView {
   _buildControls() {
     const previousUnits = this.inputs?.map(input => input.value) ?? ["1", "2", "4"];
     const card = document.createElement("section");
-    card.className = "control-card";
+    card.className = "control-card vn-inset-surface";
     card.innerHTML = `<h3>Volba tří argumentů</h3><div class="select-row">
       <label>x<select data-associator="x"></select></label>
       <label>y<select data-associator="y"></select></label>

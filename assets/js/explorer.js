@@ -208,7 +208,7 @@ function selectFanoLine(index, line) {
 
 function buildLayerControls() {
   const fieldset = document.createElement("fieldset");
-  fieldset.className = "layer-controls";
+  fieldset.className = "layer-controls vn-inset-surface";
   const legend = document.createElement("legend"); legend.textContent = "Viditelné vrstvy";
   fieldset.append(legend);
   for (let layer = 1; layer <= 5; layer++) {
@@ -226,7 +226,7 @@ function buildLayerControls() {
 const layerControl = buildLayerControls();
 
 function buildIncidenceControls() {
-  const controls = document.createElement("div"); controls.className = "control-card";
+  const controls = document.createElement("div"); controls.className = "control-card vn-inset-surface";
   controls.innerHTML = `<h3>Filtry grafu</h3><div class="layer-controls">
     <label><input type="checkbox" data-edge="weak" checked> Slabá vazba · 1 společný bod</label>
     <label><input type="checkbox" data-edge="strong" checked> Silná vazba · 2 společné body</label></div>
@@ -246,7 +246,7 @@ function buildIncidenceControls() {
 }
 
 function buildFanoControls() {
-  const panel = document.createElement("div"); panel.className = "control-card";
+  const panel = document.createElement("div"); panel.className = "control-card vn-inset-surface";
   panel.innerHTML = `<h3>Orientace</h3><p class="muted">Po směru orientované linie je součin kladný; opačný směr mění znaménko.</p>
     <div class="fano-control-list"></div>`;
   const list = panel.querySelector(".fano-control-list");
@@ -261,7 +261,7 @@ function buildFanoControls() {
 }
 
 function buildUniverseControls() {
-  const panel = document.createElement("div"); panel.className = "control-card";
+  const panel = document.createElement("div"); panel.className = "control-card vn-inset-surface";
   panel.innerHTML = `<h3>Společný pohled</h3><p>Vrstvy úplného hypergrafu a sedm orientovaných Fanoových trojic jsou zobrazeny současně. Čárky a barvy neznázorňují další násobení.</p>
     <label><input type="checkbox" data-universe-fano checked> Zobrazit Fanoovy linie</label>`;
   const checkbox = panel.querySelector("input");
@@ -318,7 +318,7 @@ function setMode(mode) {
     associator.update();
   }
   else if (mode === "universe") {
-    const panel = document.createElement("div"); panel.className = "control-card";
+    const panel = document.createElement("div"); panel.className = "control-card vn-inset-surface";
     panel.innerHTML = `<h3>Universe projection</h3><p>Překryv úplného hypergrafu a Fanoových vztahů. Ztlumená nebo skrytá plocha nemění incidenční statistiky.</p>`;
     controlsPanel.replaceChildren(panel, layerControl.fieldset);
   }
@@ -408,7 +408,9 @@ function renderTheme() {
   const light = document.documentElement.dataset.theme === "light";
   themeButton.textContent = light ? "Tmavý režim" : "Světlý režim";
   themeButton.setAttribute("aria-pressed", String(light));
-  scene.background.set(light ? 0xf2f5f8 : 0x111827);
+  const pageColor = getComputedStyle(document.documentElement).getPropertyValue("--vn-page").trim();
+  scene.background.set(pageColor);
+  document.querySelector('meta[name="theme-color"]').content = pageColor;
 }
 themeButton.addEventListener("click", () => {
   document.documentElement.dataset.theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";

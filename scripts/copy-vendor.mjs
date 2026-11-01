@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const copies = [
+  ["assets/css/design-tokens.css", "public/assets/css/design-tokens.css"],
+  ["assets/css/card-materials.css", "public/assets/css/card-materials.css"],
+  ["assets/css/pilot-cards.css", "public/assets/css/pilot-cards.css"],
   ["node_modules/three/build/three.module.js", "public/assets/vendor/three/three.module.js"],
   ["node_modules/three/build/three.core.js", "public/assets/vendor/three/three.core.js"],
   ["node_modules/gsap/index.js", "public/assets/vendor/gsap/gsap.js"],

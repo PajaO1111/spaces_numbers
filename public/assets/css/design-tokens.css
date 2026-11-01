@@ -1,0 +1,97 @@
+:root {
+  --vn-font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --vn-font-math: "Cambria Math", "Times New Roman", serif;
+  --vn-line-height-body: 1.55;
+  --vn-space-1: .25rem;
+  --vn-space-2: .5rem;
+  --vn-space-3: .75rem;
+  --vn-space-4: 1rem;
+  --vn-space-5: 1.5rem;
+  --vn-space-6: 2rem;
+  --vn-radius-control: 10px;
+  --vn-radius-inset: 14px;
+  --vn-radius-card: 18px;
+  --vn-focus-width: 3px;
+  --vn-focus-offset: 3px;
+  --vn-reading-max: 68ch;
+  --vn-card-blur: 6px;
+  --vn-motion-fast: .18s;
+
+  --vn-page: #080d18;
+  --vn-surface-solid: #172334;
+  --vn-surface-reading: rgba(23, 35, 52, .82);
+  --vn-surface-lab: rgba(23, 35, 52, .9);
+  --vn-surface-workspace: #172334;
+  --vn-surface-inset: #1c2a3d;
+  --vn-text: #eef3fa;
+  --vn-text-muted: #b8c4d6;
+  --vn-border: #7b8da6;
+  --vn-card-border: #35465c;
+  --vn-interaction: #73c9dc;
+  --vn-interaction-soft: #1b3244;
+  --vn-focus: #f4ca78;
+  --vn-error: #ffb4b4;
+  --vn-success: #86efac;
+  --vn-card-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+  --vn-control-bg: var(--vn-surface-solid);
+  --vn-control-hover: var(--vn-surface-inset);
+  --vn-control-selected: var(--vn-interaction-soft);
+  --vn-control-disabled-bg: var(--vn-surface-solid);
+  --vn-control-disabled-text: var(--vn-text-muted);
+  --vn-control-border: var(--vn-border);
+
+  --vn-world-n: #38bdf8;
+  --vn-world-z: #4ade80;
+  --vn-world-q: #fb923c;
+  --vn-world-r: #facc15;
+  --vn-world-c: #22d3ee;
+  --vn-world-h: #c084fc;
+  --vn-world-o: #fb7185;
+  --vn-world-n-text: var(--vn-world-n);
+  --vn-world-z-text: var(--vn-world-z);
+  --vn-world-q-text: var(--vn-world-q);
+  --vn-world-r-text: var(--vn-world-r);
+  --vn-world-c-text: var(--vn-world-c);
+  --vn-world-h-text: var(--vn-world-h);
+  --vn-world-o-text: var(--vn-world-o);
+  --vn-world-edge: var(--vn-world-c);
+  --vn-world-text: var(--vn-world-c-text);
+}
+
+:root[data-theme="light"] {
+  --vn-page: #f5f7fa;
+  --vn-surface-solid: #ffffff;
+  --vn-surface-reading: rgba(255, 255, 255, .9);
+  --vn-surface-lab: rgba(255, 255, 255, .94);
+  --vn-surface-workspace: #ffffff;
+  --vn-surface-inset: #edf2f7;
+  --vn-text: #172433;
+  --vn-text-muted: #46586b;
+  --vn-border: #687b90;
+  --vn-card-border: #b8c6d6;
+  --vn-interaction: #176f83;
+  --vn-interaction-soft: #e2eef2;
+  --vn-focus: #854d0e;
+  --vn-error: #a11930;
+  --vn-success: #166534;
+  --vn-card-shadow: 0 8px 24px rgba(23, 36, 51, .08);
+  --vn-world-n-text: #075985;
+  --vn-world-z-text: #166534;
+  --vn-world-q-text: #9a3412;
+  --vn-world-r-text: #854d0e;
+  --vn-world-c-text: #155e75;
+  --vn-world-h-text: #6b21a8;
+  --vn-world-o-text: #9f1239;
+}
+
+[data-world="n"] { --vn-world-edge: var(--vn-world-n); --vn-world-text: var(--vn-world-n-text); }
+[data-world="z"] { --vn-world-edge: var(--vn-world-z); --vn-world-text: var(--vn-world-z-text); }
+[data-world="q"] { --vn-world-edge: var(--vn-world-q); --vn-world-text: var(--vn-world-q-text); }
+[data-world="r"], [data-world="irrational"] { --vn-world-edge: var(--vn-world-r); --vn-world-text: var(--vn-world-r-text); }
+[data-world="c"] { --vn-world-edge: var(--vn-world-c); --vn-world-text: var(--vn-world-c-text); }
+[data-world="h"] { --vn-world-edge: var(--vn-world-h); --vn-world-text: var(--vn-world-h-text); }
+[data-world="o"] { --vn-world-edge: var(--vn-world-o); --vn-world-text: var(--vn-world-o-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --vn-motion-fast: 0s; }
+}
