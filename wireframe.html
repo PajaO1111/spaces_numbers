@@ -275,6 +275,9 @@
       font-size: 1.15rem;
     }
     .sidebar { margin-top: 18px; }
+    .depth-detail section + section { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .depth-detail h4 { margin: 0 0 8px; font-size: 1rem; }
+    .depth-detail p { margin-bottom: 0; overflow-wrap: anywhere; }
     .story-motto { margin: 18px 0 0; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--accent); }
     .exposition { margin-top: var(--space-6); padding: clamp(18px, 3vw, 28px); }
     .exposition h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); }
@@ -508,9 +511,21 @@
               <g id="lab-drawing"></g>
             </svg>
             <div id="lab-results" aria-live="polite">
+              <h4>Výsledek</h4>
               <p id="lab-result" class="example"></p>
+              <h4>Kroky výpočtu</h4>
               <p id="lab-steps"></p>
-              <p id="lab-polar"></p>
+              <h4>Délka a směr bodů</h4>
+              <p>Modul je vzdálenost od počátku. Argument je úhel od kladné reálné osy; kladné otočení je proti směru hodinových ručiček.</p>
+              <div class="table-wrap" tabindex="0" role="region" aria-label="Moduly a argumenty komplexních čísel">
+                <table>
+                  <caption>Souřadnice, vzdálenosti a úhly (přibližné hodnoty)</caption>
+                  <thead><tr><th scope="col">Bod</th><th scope="col">Číslo</th><th scope="col">Modul · vzdálenost</th><th scope="col">Argument · úhel</th></tr></thead>
+                  <tbody id="lab-polar"></tbody>
+                </table>
+              </div>
+              <details><summary>Jak číst modul a argument?</summary><p>Pro a + bi je modul √(a² + b²). Hlavní argument volíme v (−180°, 180°]; úhly lišící se o 360° označují stejný směr. Nula má modul 0, ale nemá směr, a proto ani argument. Tabulka používá číselná přiblížení; zlomkový výsledek výše zůstává přesný.</p></details>
+              <h4>Co se stalo v rovině?</h4>
               <p id="lab-geometry"></p>
               <p id="lab-scale" class="visualization-note"></p>
             </div>
@@ -527,6 +542,7 @@
             <button class="back-button" id="back-to-complex" type="button">Zpět do komplexní roviny</button>
             <div class="dimension-view">
               <h3 class="view-heading" id="dimension-title" tabindex="-1"></h3>
+              <p id="dimension-guide"></p>
               <div class="mode-switch" role="group" aria-label="Pohled na strukturu">
                 <button class="mode-button" type="button" data-mode="intuice" aria-pressed="true">Intuice</button>
                 <button class="mode-button" type="button" data-mode="souradnice" aria-pressed="false">Souřadnice</button>
@@ -868,7 +884,7 @@
               <button class="level-button" type="button" data-level="pokrocila" aria-pressed="false">Pokročilá</button>
               <button class="level-button" type="button" data-level="akademicka" aria-pressed="false">Akademická</button>
             </div>
-            <p class="depth-detail" id="depth-detail">Intuitivní vysvětlení bez nutnosti předchozích znalostí.</p>
+            <div class="depth-detail" id="depth-detail" aria-live="polite"></div>
           </section>
       </aside>
       <section class="panel exposition" id="real-exposition" aria-labelledby="real-exposition-title">
@@ -1099,11 +1115,6 @@
     const labError = document.querySelector("#lab-error");
     const labDrawing = document.querySelector("#lab-drawing");
     const approximateLab = value => value.toLocaleString("cs-CZ", { maximumFractionDigits: 6 });
-    const labPolarText = (name, value) => {
-      const p = ComplexMath.polar(value);
-      const angle = p.argument === null ? "nedefinován (nulové číslo)" : `≈ ${approximateLab(p.argument * 180 / Math.PI)}°`;
-      return `${name}: |${name}| ≈ ${approximateLab(p.modulus)}, arg(${name}) ${angle}`;
-    };
 
     function labSvg(tag, attributes, text) {
       const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -1157,9 +1168,19 @@
         divide: `Vynásobíme čitatele i jmenovatele sdruženým w: (${c}) − (${d})i. Re: (ac + bd)/(c² + d²); Im: (bc − ad)/(c² + d²).`
       };
       document.querySelector("#lab-steps").textContent = steps[operation];
-      document.querySelector("#lab-polar").textContent =
-        [labPolarText("z", z), labPolarText("w", w), labPolarText("výsledek", result)].join(" · ") +
-        ". Modul je √(Re² + Im²); hlavní argument volíme v (−180°, 180°].";
+      document.querySelector("#lab-polar").replaceChildren(...[["z", z], ["w", w], ["výsledek", result]].map(([name, value]) => {
+        const polar = ComplexMath.polar(value);
+        const row = document.createElement("tr");
+        const cells = [name, ComplexMath.complexText(value), `≈ ${approximateLab(polar.modulus)}`,
+          polar.argument === null ? "Nedefinován (nulové číslo)" : `≈ ${approximateLab(polar.argument * 180 / Math.PI)}°`];
+        cells.forEach((text, index) => {
+          const cell = document.createElement(index === 0 ? "th" : "td");
+          if (index === 0) cell.scope = "row";
+          cell.textContent = text;
+          row.append(cell);
+        });
+        return row;
+      }));
       const pz = ComplexMath.polar(z), pw = ComplexMath.polar(w);
       const geometry = operation === "add"
         ? "Sčítání je posun o vektor w. Přerušované spojnice doplňují rovnoběžník z, w a výsledku."
@@ -1167,7 +1188,10 @@
           ? "Násobení nulou stáhne každý bod do počátku. Nula nemá argument, proto zde nelze mluvit o úhlu otočení."
           : `${operation === "multiply" ? "Násobení" : "Dělení"} w: měřítko ≈ ${approximateLab(operation === "multiply" ? pw.modulus : 1 / pw.modulus)}, otočení ≈ ${approximateLab((operation === "multiply" ? pw.argument : -pw.argument) * 180 / Math.PI)}°. ` +
             (pz.argument === null ? "z je nula: výsledek zůstává v počátku a jeho argument není definován." : "Argumenty se sčítají/odčítají modulo 360°, moduly se násobí/dělí.");
-      document.querySelector("#lab-geometry").textContent = geometry;
+      const resultPolar = ComplexMath.polar(result);
+      document.querySelector("#lab-geometry").textContent = geometry +
+        ` Bod z = ${ComplexMath.complexText(z)} přejde na ${ComplexMath.complexText(result)}. ` +
+        `Vzdálenost od počátku: ${approximateLab(pz.modulus)} → ${approximateLab(resultPolar.modulus)} (přibližně).`;
       const plot = ComplexMath.plot(z, w, result);
       const drawing = [];
       plot.points.forEach((point, index) => {
@@ -1237,7 +1261,7 @@
         copy: "Čísla, kterými počítáme. Když chceme od tří odečíst pět, přirozená čísla už na výsledek nestačí.",
         context: "Tady začíná vnoření: ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ.",
         depths: {
-          zakladni: "Intuitivní vysvětlení bez nutnosti předchozích znalostí.",
+          zakladni: "Přirozená čísla slouží k počítání jednotlivých věcí; jejich pořadí určují další a další jednotky.",
           pokrocila: "Zvolíme-li ℕ = {1, 2, 3, …}, odčítání není vždy uzavřenou operací.",
           akademicka: "Konvence se liší: ℕ může označovat kladná nebo nezáporná celá čísla. Obě volby zachovávají ℕ ⊂ ℤ."
         }
@@ -1314,6 +1338,64 @@
       }
     ];
 
+    const depthExamples = {
+      "ℕ": {
+        zakladni: ["Tři kamínky a dva kamínky dají pět: 3 + 2 = 5. Výsledek je opět přirozený.", "3 − 5 už v ℕ neleží. Záporný výsledek potřebuje rozšíření na ℤ; konvence o nule tento problém neřeší."],
+        pokrocila: ["Uzavřenost znamená, že operace s prvky množiny má výsledek opět v ní. U 3 − 5 tato podmínka selže.", "ℕ ⊂ ℤ je inkluze: stará čísla se nezmění. Větší celek umožní každý rozdíl, nikoli jiné pravidlo pro 3 + 2."],
+        akademicka: ["Princip indukce: platí-li tvrzení pro první prvek a krok n → n+1, platí pro všechna přirozená čísla zvolené konvence.", "Sčítání a násobení jsou asociativní a komutativní. Pro nenulové n však v ℕ obecně není aditivní inverze −n; ℕ není okruh."]
+      },
+      "ℤ": {
+        zakladni: ["Teplota 3 °C klesne o 5 °C na −2 °C. Záporné číslo popisuje směr od nuly.", "Rozdíl 3 − 5 je definovaný v ℤ. Rozdělit jednu jednotku na dvě stejné části ale vyžaduje 1/2 v ℚ."],
+        pokrocila: ["Každé celé n má opačné číslo −n a n + (−n) = 0. Násobení a součty celých čísel zůstávají celé.", "Dělení není uzavřené: 4/2 je celé, 1/2 ne. Dělitelnost a obecné dělení jsou různé pojmy."],
+        akademicka: ["V ℤ není dělitel nuly: ab = 0 implikuje a = 0 nebo b = 0. Proto lze vytvořit podílové těleso ℚ.", "Jen 1 a −1 mají multiplikativní inverzi v ℤ. Okruh s jednotkou proto není automaticky tělesem."]
+      },
+      "ℚ": {
+        zakladni: ["1/2 + 1/3 = 3/6 + 2/6 = 5/6. Společný jmenovatel převádí části na stejně velké díly.", "Zlomek není jen zápis: 1/2 = 2/4. √2 ale žádným podílem celých čísel vyjádřit nelze."],
+        pokrocila: ["Mezi a < b v ℚ leží (a+b)/2. Přesto hustota neznamená úplnost: racionální aproximace √2 nemají racionální limitu.", "Racionální čísla jsou algebraická: p/q řeší qx−p = 0. Desetinný rozvoj je konečný nebo od určitého místa periodický."],
+        akademicka: ["ℚ vzniká z dvojic (p,q), q ≠ 0; (p,q) a (r,s) představují stejné číslo právě tehdy, když ps = rq.", "Každý nenulový zlomek má inverzi q/p. ℚ je spočetné, husté uspořádané těleso, ale ne úplné v obvyklé metrice."]
+      },
+      "ℝ": {
+        zakladni: ["Úhlopříčka čtverce o straně 1 má délku √2. Leží na reálné ose stejně jako 3/4, π nebo záporná čísla.", "ℝ zahrnuje racionální i iracionální čísla. Iracionální část není novou vrstvou nad ℝ."],
+        pokrocila: ["√2 je algebraické iracionální: řeší x²−2 = 0, ale není zlomek. π a e jsou transcendentní, a proto také iracionální.", "Úplnost vyplňuje racionální mezery v limitech. Konečný desetinný zápis √2 nebo π je pouze aproximace, ne přesná hodnota."],
+        akademicka: ["Úplnost lze vyjádřit takto: každá neprázdná shora omezená podmnožina ℝ má supremum v ℝ.", "ℝ je až na izomorfismus jediné úplné uspořádané těleso. Vložení do ℂ zachovává operace, ale ℂ už nelze uspořádat jako těleso."]
+      },
+      "ℂ": {
+        zakladni: ["2 + i má souřadnice (2,1): dvě reálné složky určují bod roviny. Reálné číslo 2 je bod (2,0).", "i² = −1 dává řešení rovnice x²+1 = 0. Násobení číslem i otočí 2+i na −1+2i o 90° a zachová vzdálenost √5."],
+        pokrocila: ["Pro nenulové w se při násobení moduly násobí a argumenty sčítají modulo 360°. U w = i je modul 1 a argument 90°.", "Násobení v ℂ je komutativní a asociativní. Až v ℍ záleží na pořadí. Nula nemá argument a dělení nulou není definované."],
+        akademicka: ["ℂ ≅ ℝ[x]/(x²+1); i je třída x. Reálná osa se vkládá zobrazením a ↦ a+0i.", "ℂ je algebraicky uzavřené těleso. Tělesové uspořádání nemůže existovat, protože čtverec nenulového prvku je v uspořádaném tělese kladný, ale i² = −1."]
+      },
+      "ℍ": {
+        zakladni: ["Kvaternion a+bi+cj+dk potřebuje čtyři reálné koeficienty. To neznamená čtyři fyzické směry.", "ij = k, ale ji = −k. Zkus předvolbu v Algebře: změna pořadí faktorů změní výsledek, ne počet složek."],
+        pokrocila: ["Jednotkový u otáčí vektor jako v′ = uvu⁻¹. Krychle v Geometrii je otáčený 3D objekt, ne kvaternion.", "Součin zůstává asociativní: (qp)r = q(pr). Jednotkové u a −u určují stejnou rotaci, přesto jsou to různé kvaterniony."],
+        akademicka: ["Pro q ≠ 0 je q⁻¹ = q̄/|q|². Jednotkové kvaterniony tvoří S³ a dvojitě pokrývají grupu SO(3).", "Topologie S³ ukazuje stereografickou projekci s vynechaným pólem; není Hopfovou fibrací. Cayley–Dicksonův krok z dvojic komplexních čísel vytváří ℍ."]
+      },
+      "𝕆": {
+        zakladni: ["Fanoův diagram čteme jako pravidla násobení: e₁e₂ = e₃, opačné pořadí dává −e₃. Délka čar nic neměří.", "V naší konvenci (e₁e₂)e₄ = e₇, ale e₁(e₂e₄) = −e₇. Nově záleží také na závorkách."],
+        pokrocila: ["Asociátor [x,y,z] = (xy)z − x(yz) měří rozdíl závorkování. Pro e₁,e₂,e₄ je 2e₇; pro Fanoovu trojici e₁,e₂,e₃ je nulový.", "Alternativita zaručuje (xx)y = x(xy) a (yx)x = y(xx). Dva prvky generují asociativní podalgebru, ne libovolné tři. Všech 35 trojic není sedm Fanoových přímek."],
+        akademicka: ["Cayley–Dickson v této konvenci: (a,b)(c,d) = (ac − d̄b, da + bc̄), kde a,b,c,d ∈ ℍ. Builder ve Struktuře ukazuje zdvojování 1/2/4/8.", "Hurwitzova věta omezuje konečněrozměrné reálné normované algebry s dělením na ℝ, ℂ, ℍ a 𝕆. Souřadnicová projekce S⁷ nezobrazuje celou sféru ani fyzický prostor."]
+      },
+      "ℝ∖ℚ": {
+        zakladni: ["√2 nelze zapsat jako zlomek. Je to přesto reálné číslo a leží na stejné ose jako 1/2.", "Ne každé iracionální číslo je transcendentní: √2 je algebraické, zatímco π a e jsou transcendentní."],
+        pokrocila: ["Algebraické číslo je kořen nenulového polynomu s celočíselnými koeficienty. √2 řeší x²−2 = 0; π a e takový polynom nemají.", "Racionální i iracionální čísla jsou hustá. Mezi body osy není oddělená oblast vyhrazená iracionálním číslům."],
+        akademicka: ["ℝ∖ℚ není těleso: √2 a −√2 jsou iracionální, jejich součet 0 je racionální. Také √2·√2 = 2.", "Doplněk je nespočetný a hustý v ℝ. Klasifikace algebraická/transcendentní je jiný vztah než rozšíření algeber ℝ → ℂ → ℍ → 𝕆."]
+      }
+    };
+
+    function renderDepth(stop, convention) {
+      const summary = activeSymbol === "ℕ" && activeLevel === "pokrocila"
+        ? `${convention} Odčítání není vždy uzavřenou operací.` : stop.depths[activeLevel];
+      const paragraphs = [summary, ...depthExamples[activeSymbol][activeLevel]];
+      elements.depth.replaceChildren(...paragraphs.map((text, index) => {
+        const section = document.createElement("section");
+        const heading = document.createElement("h4");
+        heading.textContent = ["Hlavní myšlenka", "Příklad a souvislost", "Hranice a další krok"][index];
+        const paragraph = document.createElement("p");
+        paragraph.textContent = text;
+        section.append(heading, paragraph);
+        return section;
+      }));
+    }
+
     const elements = {
       title: document.querySelector("#lesson-title"),
       symbol: document.querySelector("#lesson-symbol"),
@@ -1357,18 +1439,21 @@
       elements.copy.textContent = stop.copy;
       elements.example.textContent = stop.example;
       elements.context.textContent = stop.context;
-      elements.depth.textContent = stop.depths[activeLevel];
+      let convention;
       if (activeSymbol === "ℕ") {
-        const convention = naturalZero.checked ? "ℕ = {0, 1, 2, 3, …}; 0 ∈ ℕ." : "ℕ = {1, 2, 3, …}; 0 ∉ ℕ.";
+        convention = naturalZero.checked ? "ℕ = {0, 1, 2, 3, …}; 0 ∈ ℕ." : "ℕ = {1, 2, 3, …}; 0 ∉ ℕ.";
         elements.context.textContent += ` Zvolená konvence: ${convention}`;
-        if (activeLevel === "pokrocila") elements.depth.textContent = `${convention} Odčítání není vždy uzavřenou operací.`;
       }
+      renderDepth(stop, convention);
       mapNodes.forEach(node => node.setAttribute("aria-pressed", String(node.dataset.symbol === activeSymbol)));
       document.querySelector("#real-structure").hidden = isComplexView || isHigherDimension;
       document.querySelector("#complex-plane-view").hidden = !isComplexView;
       document.querySelector("#higher-dimension-view").hidden = !isHigherDimension;
       if (isHigherDimension) {
         dimensionTitle.textContent = `${stop.name} · šest režimů`;
+        document.querySelector("#dimension-guide").textContent = activeSymbol === "ℍ"
+          ? "Kde začít: Algebra ukazuje rozdíl ij a ji; Geometrie otáčení krychle; Topologie S³ jednotkové kvaterniony v projekci. Nejde o tři obrazy stejného fyzického prostoru."
+          : "Kde začít: Algebra vysvětluje součin a závorky; Struktura propojuje Fanoův diagram, asociátor, alternativitu a Cayley–Dicksonův builder. Topologie S⁷ je souřadnicová projekce; Geometrie nabídne samostatný explorátor. Tyto režimy už jsou součástí této expozice.";
         renderDimensionMode();
       }
     }
