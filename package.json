@@ -1,0 +1,22 @@
+{
+  "name": "vesmir-cisel-octonion-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone PHP and Three.js octonion hypergraph explorer",
+  "scripts": {
+    "build": "npm run vendor && npm run css",
+    "vendor": "node scripts\\copy-vendor.mjs",
+    "css": "sass assets\\scss\\explorer.scss public\\assets\\explorer.css --style=compressed --no-source-map",
+    "test:unit": "node --test .\\complex-math.test.js .\\quaternion-math.test.js .\\octonion-math.test.js .\\octonion-data.test.js",
+    "test:e2e": "playwright test",
+    "test": "npm run test:unit && npm run test:e2e"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "sass": "1.107.1"
+  }
+}
